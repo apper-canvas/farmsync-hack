@@ -5,6 +5,24 @@ import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
 import EmptyState from '@/components/molecules/EmptyState';
 
+// Utility function to check if a date value is valid
+const isValidDate = (date) => {
+    if (!date) return false;
+    if (date === '' || date === null || date === undefined) return false;
+    const dateObj = new Date(date);
+    return dateObj instanceof Date && !isNaN(dateObj.getTime());
+};
+
+// Safe date formatting function with validation
+const safeFormatDate = (date, formatString = 'MMM d, yyyy', fallback = 'Invalid date') => {
+    if (!isValidDate(date)) return fallback;
+    try {
+        return format(new Date(date), formatString);
+    } catch (error) {
+        console.warn('Date formatting error:', error);
+        return fallback;
+    }
+};
 const growthStages = [
     { value: 'planted', label: 'Planted', color: 'bg-gray-100 text-gray-800' },
     { value: 'germinated', label: 'Germinated', color: 'bg-green-100 text-green-800' },
@@ -17,21 +35,37 @@ const growthStages = [
 
 const CropsTable = ({ crops, farms, onEdit, onDelete, filter, onAddCrop }) => {
     const getFarmName = (farmId) => {
-        const farm = farms.find(f => f.id === farmId);
-        return farm ? farm.name : 'Unknown Farm';
+        const farm = farms?.find(f => (f?.id ?? f?.Id) === farmId);
+        return farm?.name ?? farm?.Name ?? 'Unknown Farm';
     };
 
     const getStageInfo = (stage) => {
         return growthStages.find(s => s.value === stage) || growthStages[0];
     };
-
-    const getDaysToHarvest = (harvestDate) => {
-        const days = differenceInDays(new Date(harvestDate), new Date());
-        if (days < 0) return 'Overdue';
-        if (days === 0) return 'Today';
-        return `${days} days`;
+const getDaysToHarvest = (harvestDate) => {
+        // Validate the harvest date before processing
+        if (!isValidDate(harvestDate)) {
+            return 'N/A';
+        }
+        
+        try {
+            const harvestDateObj = new Date(harvestDate);
+            const currentDate = new Date();
+            
+            // Additional check to ensure the date object is valid
+            if (isNaN(harvestDateObj.getTime())) {
+                return 'Invalid date';
+            }
+            
+            const days = differenceInDays(harvestDateObj, currentDate);
+            if (days < 0) return 'Overdue';
+            if (days === 0) return 'Today';
+            return `${days} days`;
+        } catch (error) {
+            console.warn('Error calculating days to harvest:', error);
+            return 'N/A';
+        }
     };
-
     if (crops.length === 0) {
         return (
             <EmptyState
@@ -122,15 +156,15 @@ return (
                                             {stageInfo.label}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {format(new Date(crop.plantingDate), 'MMM d, yyyy')}
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {safeFormatDate(crop?.plantingDate ?? crop?.planting_date, 'MMM d, yyyy', 'No date set')}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-900">
-                                            {format(new Date(crop.expectedHarvestDate), 'MMM d, yyyy')}
+                                            {safeFormatDate(crop?.expectedHarvestDate ?? crop?.expected_harvest_date, 'MMM d, yyyy', 'No date set')}
                                         </div>
                                         <div className="text-sm text-gray-500">
-                                            {getDaysToHarvest(crop.expectedHarvestDate)}
+                                            {getDaysToHarvest(crop?.expectedHarvestDate ?? crop?.expected_harvest_date)}
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
