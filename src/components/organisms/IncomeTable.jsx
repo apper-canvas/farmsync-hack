@@ -135,27 +135,27 @@ const IncomeTable = ({ income, crops, farms, onEdit, onDelete }) => {
                     {getFarmName(incomeItem.farmId)}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
-                    <Button
+                    <motion.button
                       onClick={() => onEdit(incomeItem)}
-                      className="text-primary hover:text-primary/80"
+                      className="text-primary hover:text-primary/80 p-1 rounded"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
                       <ApperIcon name="Edit" className="h-4 w-4" />
-                    </Button>
-                    <Button
+                    </motion.button>
+                    <motion.button
                       onClick={() => onDelete(incomeItem.id)}
-                      className="text-gray-400 hover:text-error"
+                      className="text-gray-400 hover:text-error p-1 rounded"
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
-                      <ApperIcon name="Trash2" className="h-4 w-4" />
-                    </Button>
+<ApperIcon name="Trash2" className="h-4 w-4" />
+                    </motion.button>
                   </div>
                 </td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
