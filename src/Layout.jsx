@@ -45,11 +45,11 @@ export default function Layout() {
                           ? 'bg-secondary text-white'
                           : 'text-gray-300 hover:bg-primary/80 hover:text-white'
                       }`
-                    }
+}
                   >
                     <ApperIcon
                       name={route.icon}
-                      className="mr-3 h-5 w-5 flex-shrink-0"
+                      className="mr-3 h-6 w-6 flex-shrink-0"
                     />
                     {route.label}
                   </NavLink>

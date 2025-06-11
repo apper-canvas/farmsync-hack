@@ -42,13 +42,20 @@ component: TasksPage
     icon: 'Cloud',
 component: WeatherPage
   },
-  expenses: {
+expenses: {
     id: 'expenses',
     label: 'Expenses',
     path: '/expenses',
     icon: 'DollarSign',
-component: ExpensesPage
-},
+    component: ExpensesPage
+  },
+  income: {
+    id: 'income',
+    label: 'Income',
+    path: '/income',
+    icon: 'TrendingUp',
+    component: () => import('@/components/pages/CropIncomePage').then(module => ({ default: module.default }))
+  },
   farmDetails: {
     id: 'farmDetails',
     label: 'Farm Details',

@@ -1,15 +1,7 @@
-import farmService from './api/farmService'
-import cropService from './api/cropService'
-import expenseService from './api/expenseService'
-import exportService from './api/exportService'
-import taskService from './api/taskService'
-import weatherService from './api/weatherService'
-
-export {
-  farmService,
-  cropService,
-  expenseService,
-  exportService,
-  taskService,
-  weatherService
-}
+export { default as farmService } from './api/farmService';
+export { default as cropService } from './api/cropService';
+export { default as taskService } from './api/taskService';
+export { default as expenseService } from './api/expenseService';
+export { default as incomeService } from './api/incomeService';
+export { default as weatherService } from './api/weatherService';
+export { default as exportService } from './api/exportService';
