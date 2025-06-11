@@ -1,0 +1,63 @@
+{
+  "current": {
+    "location": "Willamette Valley, OR",
+    "temperature": 72,
+    "feelsLike": 75,
+    "condition": "sunny",
+    "humidity": 45,
+    "windSpeed": 8,
+    "pressure": 30.15,
+    "uvIndex": 6
+  },
+  "forecast": [
+    {
+      "date": "2024-12-19",
+      "high": 74,
+      "low": 52,
+      "condition": "sunny",
+      "precipitation": 5
+    },
+    {
+      "date": "2024-12-20",
+      "high": 76,
+      "low": 54,
+      "condition": "cloudy",
+      "precipitation": 15
+    },
+    {
+      "date": "2024-12-21",
+      "high": 68,
+      "low": 48,
+      "condition": "rainy",
+      "precipitation": 85
+    },
+    {
+      "date": "2024-12-22",
+      "high": 65,
+      "low": 46,
+      "condition": "rainy",
+      "precipitation": 75
+    },
+    {
+      "date": "2024-12-23",
+      "high": 70,
+      "low": 50,
+      "condition": "cloudy",
+      "precipitation": 30
+    },
+    {
+      "date": "2024-12-24",
+      "high": 73,
+      "low": 53,
+      "condition": "sunny",
+      "precipitation": 10
+    },
+    {
+      "date": "2024-12-25",
+      "high": 75,
+      "low": 55,
+      "condition": "sunny",
+      "precipitation": 5
+    }
+  ]
+}

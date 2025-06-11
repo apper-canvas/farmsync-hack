@@ -1,0 +1,34 @@
+[
+  {
+    "id": "farm-1",
+    "name": "Green Valley Farm",
+    "size": 125.5,
+    "sizeUnit": "acres",
+    "location": "Willamette Valley, Oregon",
+    "createdAt": "2024-01-15T08:30:00.000Z"
+  },
+  {
+    "id": "farm-2",
+    "name": "Sunrise Organic Fields",
+    "size": 87.2,
+    "sizeUnit": "acres",
+    "location": "Napa Valley, California",
+    "createdAt": "2024-02-03T14:20:00.000Z"
+  },
+  {
+    "id": "farm-3",
+    "name": "Heritage Family Farm",
+    "size": 203.8,
+    "sizeUnit": "acres",
+    "location": "Lancaster County, Pennsylvania",
+    "createdAt": "2024-01-28T10:45:00.000Z"
+  },
+  {
+    "id": "farm-4",
+    "name": "Coastal Plains Agriculture",
+    "size": 156.7,
+    "sizeUnit": "acres",
+    "location": "Georgia Coastal Plain",
+    "createdAt": "2024-03-12T09:15:00.000Z"
+  }
+]

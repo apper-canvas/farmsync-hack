@@ -1,0 +1,82 @@
+[
+  {
+    "id": "expense-1",
+    "farmId": "farm-1",
+    "category": "seeds",
+    "amount": 450.00,
+    "date": "2024-03-10",
+    "description": "Roma tomato seedlings and sweet corn seeds"
+  },
+  {
+    "id": "expense-2",
+    "farmId": "farm-1",
+    "category": "fertilizer",
+    "amount": 325.50,
+    "date": "2024-04-15",
+    "description": "Organic nitrogen fertilizer - 20 bags"
+  },
+  {
+    "id": "expense-3",
+    "farmId": "farm-2",
+    "category": "equipment",
+    "amount": 2750.00,
+    "date": "2024-02-28",
+    "description": "New tractor attachment for vineyard cultivation"
+  },
+  {
+    "id": "expense-4",
+    "farmId": "farm-2",
+    "category": "labor",
+    "amount": 1200.00,
+    "date": "2024-04-01",
+    "description": "Seasonal workers for lettuce planting"
+  },
+  {
+    "id": "expense-5",
+    "farmId": "farm-3",
+    "category": "fuel",
+    "amount": 890.25,
+    "date": "2024-03-20",
+    "description": "Diesel fuel for tractors and equipment"
+  },
+  {
+    "id": "expense-6",
+    "farmId": "farm-3",
+    "category": "maintenance",
+    "amount": 675.00,
+    "date": "2024-04-10",
+    "description": "Combine harvester repair and tune-up"
+  },
+  {
+    "id": "expense-7",
+    "farmId": "farm-4",
+    "category": "seeds",
+    "amount": 525.75,
+    "date": "2024-04-20",
+    "description": "Runner peanut seeds - certified variety"
+  },
+  {
+    "id": "expense-8",
+    "farmId": "farm-1",
+    "category": "other",
+    "amount": 180.00,
+    "date": "2024-12-15",
+    "description": "Greenhouse irrigation system parts"
+  },
+  {
+    "id": "expense-9",
+    "farmId": "farm-2",
+    "category": "fertilizer",
+    "amount": 425.00,
+    "date": "2024-12-10",
+    "description": "Organic compost for vineyard soil amendment"
+  },
+  {
+    "id": "expense-10",
+    "farmId": "farm-3",
+    "category": "labor",
+    "amount": 950.00,
+    "date": "2024-12-05",
+    "description": "Harvest crew for winter wheat"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "crop-1",
+    "farmId": "farm-1",
+    "name": "Tomatoes",
+    "variety": "Roma",
+    "plantingDate": "2024-03-15",
+    "expectedHarvestDate": "2024-07-20",
+    "growthStage": "flowering",
+    "field": "North Field A"
+  },
+  {
+    "id": "crop-2",
+    "farmId": "farm-1",
+    "name": "Corn",
+    "variety": "Sweet Corn",
+    "plantingDate": "2024-04-01",
+    "expectedHarvestDate": "2024-08-15",
+    "growthStage": "growing",
+    "field": "South Field B"
+  },
+  {
+    "id": "crop-3",
+    "farmId": "farm-2",
+    "name": "Grapes",
+    "variety": "Pinot Noir",
+    "plantingDate": "2024-02-20",
+    "expectedHarvestDate": "2024-09-30",
+    "growthStage": "fruiting",
+    "field": "Vineyard Block 1"
+  },
+  {
+    "id": "crop-4",
+    "farmId": "farm-2",
+    "name": "Lettuce",
+    "variety": "Romaine",
+    "plantingDate": "2024-04-08",
+    "expectedHarvestDate": "2024-06-10",
+    "growthStage": "ready_to_harvest",
+    "field": "Greenhouse 2"
+  },
+  {
+    "id": "crop-5",
+    "farmId": "farm-3",
+    "name": "Wheat",
+    "variety": "Winter Wheat",
+    "plantingDate": "2023-10-15",
+    "expectedHarvestDate": "2024-07-05",
+    "growthStage": "fruiting",
+    "field": "East Section"
+  },
+  {
+    "id": "crop-6",
+    "farmId": "farm-3",
+    "name": "Soybeans",
+    "variety": "Roundup Ready",
+    "plantingDate": "2024-05-12",
+    "expectedHarvestDate": "2024-10-20",
+    "growthStage": "germinated",
+    "field": "West Section"
+  },
+  {
+    "id": "crop-7",
+    "farmId": "farm-4",
+    "name": "Peanuts",
+    "variety": "Runner",
+    "plantingDate": "2024-04-25",
+    "expectedHarvestDate": "2024-09-15",
+    "growthStage": "growing",
+    "field": "Field 7"
+  }
+]

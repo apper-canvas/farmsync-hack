@@ -1,0 +1,92 @@
+[
+  {
+    "id": "task-1",
+    "farmId": "farm-1",
+    "cropId": "crop-1",
+    "type": "Watering",
+    "description": "Deep watering for tomato plants in greenhouse",
+    "dueDate": "2024-12-20",
+    "priority": "high",
+    "completed": false
+  },
+  {
+    "id": "task-2",
+    "farmId": "farm-1",
+    "cropId": "crop-2",
+    "type": "Fertilizing",
+    "description": "Apply nitrogen fertilizer to corn field",
+    "dueDate": "2024-12-22",
+    "priority": "medium",
+    "completed": false
+  },
+  {
+    "id": "task-3",
+    "farmId": "farm-2",
+    "cropId": "crop-4",
+    "type": "Harvesting",
+    "description": "Harvest romaine lettuce - ready for market",
+    "dueDate": "2024-12-19",
+    "priority": "high",
+    "completed": false
+  },
+  {
+    "id": "task-4",
+    "farmId": "farm-2",
+    "cropId": "crop-3",
+    "type": "Pruning",
+    "description": "Summer pruning of grape vines",
+    "dueDate": "2024-12-25",
+    "priority": "medium",
+    "completed": false
+  },
+  {
+    "id": "task-5",
+    "farmId": "farm-3",
+    "cropId": "",
+    "type": "Equipment Maintenance",
+    "description": "Service combine harvester before wheat harvest",
+    "dueDate": "2024-12-23",
+    "priority": "high",
+    "completed": false
+  },
+  {
+    "id": "task-6",
+    "farmId": "farm-3",
+    "cropId": "crop-6",
+    "type": "Weeding",
+    "description": "Mechanical cultivation between soybean rows",
+    "dueDate": "2024-12-21",
+    "priority": "medium",
+    "completed": false
+  },
+  {
+    "id": "task-7",
+    "farmId": "farm-4",
+    "cropId": "crop-7",
+    "type": "Pest Control",
+    "description": "Apply organic pest control spray",
+    "dueDate": "2024-12-24",
+    "priority": "medium",
+    "completed": false
+  },
+  {
+    "id": "task-8",
+    "farmId": "farm-1",
+    "cropId": "",
+    "type": "Soil Testing",
+    "description": "Take soil samples from all fields for pH testing",
+    "dueDate": "2024-12-18",
+    "priority": "low",
+    "completed": true
+  },
+  {
+    "id": "task-9",
+    "farmId": "farm-2",
+    "cropId": "crop-3",
+    "type": "Watering",
+    "description": "Install drip irrigation in vineyard block 2",
+    "dueDate": "2024-12-26",
+    "priority": "medium",
+    "completed": false
+  }
+]
