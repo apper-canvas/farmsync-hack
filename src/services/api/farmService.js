@@ -62,17 +62,17 @@ async getById(id) {
     }
   }
 
-  async create(farmData) {
+async create(farmData) {
     try {
       // Only include Updateable fields
       const params = {
         records: [{
-          Name: farmData.name || farmData.Name,
+          Name: farmData.name || farmData.Name || farmData.farmName || "",
           Tags: farmData.tags || farmData.Tags || "",
           Owner: farmData.owner || farmData.Owner,
           size: parseFloat(farmData.size) || 0,
           size_unit: farmData.sizeUnit || farmData.size_unit || "acres",
-          location: farmData.location,
+          location: farmData.location || "",
           created_at: new Date().toISOString().split('T')[0] // Date format YYYY-MM-DD
         }]
       };
@@ -114,18 +114,18 @@ async getById(id) {
     }
   }
 
-  async update(id, updateData) {
+async update(id, updateData) {
     try {
       // Only include Updateable fields
       const params = {
         records: [{
           Id: parseInt(id),
-          Name: updateData.name || updateData.Name,
+          Name: updateData.name || updateData.Name || updateData.farmName || "",
           Tags: updateData.tags || updateData.Tags || "",
           Owner: updateData.owner || updateData.Owner,
           size: parseFloat(updateData.size) || 0,
           size_unit: updateData.sizeUnit || updateData.size_unit || "acres",
-          location: updateData.location,
+          location: updateData.location || "",
           created_at: updateData.created_at || new Date().toISOString().split('T')[0]
         }]
       };

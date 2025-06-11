@@ -151,8 +151,22 @@ if (error) {
     );
   }
 
-  if (!farm) {
-    return null;
+if (!farm && !loading) {
+    return (
+      <div className="p-6">
+        <div className="text-center py-12">
+          <ApperIcon name="AlertCircle" className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Farm Not Available</h3>
+          <p className="text-gray-500 mb-4">Unable to load farm details at this time.</p>
+          <Button
+            onClick={() => navigate('/farms')}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+          >
+            Back to Farms
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -160,10 +174,12 @@ if (error) {
       {/* Breadcrumb Navigation */}
       <nav className="flex items-center space-x-2 text-sm text-gray-500">
         <Link to="/farms" className="hover:text-gray-700 transition-colors">
-Farms
+          Farms
         </Link>
         <ApperIcon name="ChevronRight" className="h-4 w-4" />
-        <span className="text-gray-900">{farm?.Name || 'Farm Details'}</span>
+        <span className="text-gray-900">
+          {loading ? 'Loading...' : (farm?.Name || farm?.name || 'Farm Details')}
+        </span>
       </nav>
 
       {/* Page Header */}
@@ -174,7 +190,11 @@ Farms
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl font-heading font-bold text-gray-900 mb-2"
           >
-            {farm?.Name || 'Farm Details'}
+            {loading ? (
+              <div className="animate-pulse bg-gray-200 h-8 w-64 rounded"></div>
+            ) : (
+              farm?.Name || farm?.name || 'Farm Details'
+            )}
           </motion.h1>
           <div className="flex items-center text-gray-500">
             <ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
@@ -213,11 +233,17 @@ Farms
               Farm Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
+<div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-Farm Name
+                  Farm Name
                 </label>
-                <p className="text-gray-900">{farm?.Name || 'N/A'}</p>
+                <p className="text-gray-900">
+                  {loading ? (
+                    <div className="animate-pulse bg-gray-200 h-4 w-32 rounded"></div>
+                  ) : (
+                    farm?.Name || farm?.name || 'N/A'
+                  )}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
