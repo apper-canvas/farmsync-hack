@@ -4,11 +4,19 @@ import FormField from '@/components/molecules/FormField';
 import Button from '@/components/atoms/Button';
 
 const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, priorities, onSubmit }) => {
+    const statusOptions = [
+        { value: 'pending', label: 'Pending' },
+        { value: 'in_progress', label: 'In Progress' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'on_hold', label: 'On Hold' }
+    ];
+
     const [formData, setFormData] = useState({
         farmId: '',
         cropId: '',
         type: '',
         description: '',
+status: 'pending',
         dueDate: '',
         priority: 'medium'
     });
@@ -20,6 +28,7 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                 cropId: editingTask.cropId || '',
                 type: editingTask.type,
                 description: editingTask.description,
+status: editingTask.status || 'pending',
                 dueDate: editingTask.dueDate,
                 priority: editingTask.priority
             });
@@ -29,6 +38,7 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                 cropId: '',
                 type: '',
                 description: '',
+                status: 'pending',
                 dueDate: '',
                 priority: 'medium'
             });
@@ -43,9 +53,9 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit(formData);
-    };
+};
 
-    const filteredCrops = crops.filter(crop => crop.farmId === formData.farmId);
+    const filteredCrops = crops?.filter(crop => crop?.farmId === formData.farmId) || [];
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={editingTask ? 'Edit Task' : 'Add New Task'}>
@@ -54,10 +64,10 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                     label="Farm"
                     id="farmId"
                     name="farmId"
-                    type="select"
+type="select"
                     value={formData.farmId}
                     onChange={handleChange}
-                    options={farms.map(farm => ({ value: farm.id, label: farm.name }))}
+                    options={farms?.map(farm => ({ value: farm.id, label: farm.name })) || []}
                     placeholder="Select a farm"
                     required
                 />
@@ -77,15 +87,14 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                 <FormField
                     label="Task Type"
                     id="type"
-                    name="type"
+name="type"
                     type="select"
                     value={formData.type}
                     onChange={handleChange}
-                    options={taskTypes.map(type => ({ value: type, label: type }))}
+                    options={taskTypes?.map(type => ({ value: type, label: type })) || []}
                     placeholder="Select task type"
                     required
                 />
-
                 <FormField
                     label="Description"
                     id="description"
@@ -93,9 +102,20 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                     type="textarea"
                     value={formData.description}
                     onChange={handleChange}
-                    rows="3"
+rows="3"
                     placeholder="Add any additional details..."
                 />
+
+                <FormField
+                    label="Status"
+                    id="status"
+                    name="status"
+                    type="select"
+                    value={formData.status}
+                    onChange={handleChange}
+                    options={statusOptions}
+                    required
+/>
 
                 <div className="grid grid-cols-2 gap-3">
                     <FormField
@@ -111,13 +131,12 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
                         label="Priority"
                         id="priority"
                         name="priority"
-                        type="select"
+type="select"
                         value={formData.priority}
                         onChange={handleChange}
-                        options={priorities.map(p => ({ value: p.value, label: p.label }))}
+                        options={priorities?.map(p => ({ value: p.value, label: p.label })) || []}
                     />
                 </div>
-
                 <div className="flex space-x-3 pt-4">
                     <Button
                         type="button"
