@@ -28,13 +28,13 @@ export default function Layout() {
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1 bg-primary">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-              <div className="flex items-center flex-shrink-0 px-4">
+<div className="flex items-center flex-shrink-0 px-4">
                 <ApperIcon name="Wheat" className="h-8 w-8 text-secondary" />
                 <span className="ml-2 text-xl font-heading font-bold text-white">
                   FarmSync
                 </span>
               </div>
-              <nav className="mt-8 flex-1 px-2 space-y-1">
+              <nav className="mt-5 flex-1 px-2 space-y-1">
                 {mainNavRoutes.map((route) => (
                   <NavLink
                     key={route.id}
@@ -45,7 +45,7 @@ export default function Layout() {
                           ? 'bg-secondary text-white'
                           : 'text-gray-300 hover:bg-primary/80 hover:text-white'
                       }`
-}
+                    }
                   >
                     <ApperIcon
                       name={route.icon}
@@ -78,8 +78,7 @@ export default function Layout() {
               initial={{ x: -256 }}
               animate={{ x: 0 }}
               exit={{ x: -256 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative flex-1 flex flex-col max-w-xs w-full bg-primary z-50"
+              className="relative flex-1 flex flex-col max-w-xs w-full bg-primary"
             >
               <div className="absolute top-0 right-0 -mr-12 pt-2">
                 <button
