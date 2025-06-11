@@ -15,6 +15,7 @@ const growthStages = [
 
 const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
     const [formData, setFormData] = useState({
+        id: '',
         farmId: '',
         name: '',
         variety: '',
@@ -24,19 +25,23 @@ const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
         field: ''
     });
 
-useEffect(() => {
+    useEffect(() => {
         if (editingCrop) {
+            // Transform database response data to form field names
             setFormData({
-                farmId: editingCrop.farmId ?? '',
-                name: editingCrop.name ?? '',
-                variety: editingCrop.variety ?? '',
-                plantingDate: editingCrop.plantingDate ?? '',
-                expectedHarvestDate: editingCrop.expectedHarvestDate ?? '',
-                growthStage: editingCrop.growthStage ?? 'planted',
-                field: editingCrop.field ?? ''
+                id: editingCrop.id || editingCrop.Id || '',
+                farmId: editingCrop.farm_id || editingCrop.farmId || '',
+                name: editingCrop.Name || editingCrop.name || '',
+                variety: editingCrop.variety || '',
+                plantingDate: editingCrop.planting_date || editingCrop.plantingDate || '',
+                expectedHarvestDate: editingCrop.expected_harvest_date || editingCrop.expectedHarvestDate || '',
+                growthStage: editingCrop.growth_stage || editingCrop.growthStage || 'planted',
+                field: editingCrop.field || ''
             });
         } else {
+            // Reset form for new crop
             setFormData({
+                id: '',
                 farmId: '',
                 name: '',
                 variety: '',
