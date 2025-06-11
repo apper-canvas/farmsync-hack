@@ -14,11 +14,18 @@ const Select = ({ value, onChange, options, className = '', required = false, pl
                     {placeholder}
                 </option>
             )}
-            {options.map(option => (
-                <option key={option.value} value={option.value}>
-                    {option.label || option.value}
-                </option>
-            ))}
+{options.map((option, index) => {
+                // Ensure we have a unique key for each option
+                const optionKey = option?.value ?? option?.id ?? index;
+                const optionValue = option?.value ?? option?.id ?? '';
+                const optionLabel = option?.label ?? option?.name ?? option?.value ?? option?.id ?? '';
+                
+                return (
+                    <option key={`option-${optionKey}-${index}`} value={optionValue}>
+                        {optionLabel}
+                    </option>
+                );
+            })}
         </select>
     );
 };

@@ -14,21 +14,20 @@ const TaskFormModal = ({ isOpen, onClose, editingTask, farms, crops, taskTypes, 
     const [formData, setFormData] = useState({
         farmId: '',
         cropId: '',
-        type: '',
+type: '',
         description: '',
-status: 'pending',
+        status: 'pending',
         dueDate: '',
         priority: 'medium'
     });
-
     useEffect(() => {
         if (editingTask) {
             setFormData({
                 farmId: editingTask.farmId,
                 cropId: editingTask.cropId || '',
-                type: editingTask.type,
+type: editingTask.type,
                 description: editingTask.description,
-status: editingTask.status || 'pending',
+                status: editingTask.status || 'pending',
                 dueDate: editingTask.dueDate,
                 priority: editingTask.priority
             });
@@ -62,12 +61,16 @@ status: editingTask.status || 'pending',
             <form onSubmit={handleSubmit} className="space-y-4">
                 <FormField
                     label="Farm"
-                    id="farmId"
+id="farmId"
                     name="farmId"
-type="select"
+                    type="select"
                     value={formData.farmId}
                     onChange={handleChange}
-                    options={farms?.map(farm => ({ value: farm.id, label: farm.name })) || []}
+                    options={farms?.map((farm, index) => ({ 
+                        value: farm?.id ?? farm?.Id ?? index, 
+                        label: farm?.name ?? farm?.Name ?? `Farm ${index + 1}`,
+                        id: farm?.id ?? farm?.Id ?? index
+                    })) || []}
                     placeholder="Select a farm"
                     required
                 />
@@ -77,21 +80,29 @@ type="select"
                     id="cropId"
                     name="cropId"
                     type="select"
-                    value={formData.cropId}
+value={formData.cropId}
                     onChange={handleChange}
-                    options={filteredCrops.map(crop => ({ value: crop.id, label: crop.name }))}
+                    options={filteredCrops.map((crop, index) => ({ 
+                        value: crop?.id ?? crop?.Id ?? index, 
+                        label: crop?.name ?? crop?.Name ?? `Crop ${index + 1}`,
+                        id: crop?.id ?? crop?.Id ?? index
+                    }))}
                     placeholder="No specific crop"
                     disabled={!formData.farmId || filteredCrops.length === 0}
                 />
 
                 <FormField
-                    label="Task Type"
+label="Task Type"
                     id="type"
-name="type"
+                    name="type"
                     type="select"
                     value={formData.type}
                     onChange={handleChange}
-                    options={taskTypes?.map(type => ({ value: type, label: type })) || []}
+                    options={taskTypes?.map((type, index) => ({ 
+                        value: type, 
+                        label: type,
+                        id: `${type}-${index}`
+                    })) || []}
                     placeholder="Select task type"
                     required
                 />
@@ -100,9 +111,9 @@ name="type"
                     id="description"
                     name="description"
                     type="textarea"
-                    value={formData.description}
+value={formData.description}
                     onChange={handleChange}
-rows="3"
+                    rows="3"
                     placeholder="Add any additional details..."
                 />
 
@@ -111,11 +122,11 @@ rows="3"
                     id="status"
                     name="status"
                     type="select"
-                    value={formData.status}
+value={formData.status}
                     onChange={handleChange}
                     options={statusOptions}
                     required
-/>
+                />
 
                 <div className="grid grid-cols-2 gap-3">
                     <FormField
@@ -130,11 +141,15 @@ rows="3"
                     <FormField
                         label="Priority"
                         id="priority"
-                        name="priority"
-type="select"
+name="priority"
+                        type="select"
                         value={formData.priority}
                         onChange={handleChange}
-                        options={priorities?.map(p => ({ value: p.value, label: p.label })) || []}
+                        options={priorities?.map((p, index) => ({ 
+                            value: p?.value ?? index, 
+                            label: p?.label ?? `Priority ${index + 1}`,
+                            id: p?.value ?? `priority-${index}`
+                        })) || []}
                     />
                 </div>
                 <div className="flex space-x-3 pt-4">

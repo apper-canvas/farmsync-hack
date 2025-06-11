@@ -66,9 +66,13 @@ const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
                     id="farmId"
                     name="farmId"
                     type="select"
-                    value={formData.farmId}
+value={formData.farmId}
                     onChange={handleChange}
-                    options={farms.map(farm => ({ value: farm.id, label: farm.name }))}
+                    options={farms?.map((farm, index) => ({ 
+                        value: farm?.id ?? farm?.Id ?? index, 
+                        label: farm?.name ?? farm?.Name ?? `Farm ${index + 1}`,
+                        id: farm?.id ?? farm?.Id ?? index
+                    })) || []}
                     placeholder="Select a farm"
                     required
                 />
