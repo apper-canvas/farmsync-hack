@@ -32,32 +32,95 @@ class FarmService {
 
 async getById(id) {
     try {
+      // Enhanced input validation
+      if (!id) {
+        console.error('Farm ID is required');
+        return null;
+      }
+      
+      // Convert ID to appropriate format and validate
+      const farmId = parseInt(id, 10);
+      if (isNaN(farmId) || farmId <= 0) {
+        console.error('Invalid farm ID format:', id);
+        return null;
+      }
+      
+      console.log(`Fetching farm with ID: ${farmId}`);
+      
       const params = {
         fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "size", "size_unit", "location", "created_at"]
       };
       
-      const response = await apperClient.getRecordById('farm', id, params);
+      const response = await apperClient.getRecordById('farm', farmId, params);
       
-      if (!response || !response.success) {
+      // Enhanced response validation
+      if (!response) {
+        console.error('No response received from API for farm ID:', farmId);
+        return null;
+      }
+      
+      if (!response.success) {
         const errorMessage = response?.message || 'Farm record not found';
-        console.error('Farm not found:', errorMessage);
-        if (errorMessage.toLowerCase().includes('not found') || errorMessage.toLowerCase().includes('does not exist')) {
-          // Don't show toast for record not found - let the UI handle it
+        console.error(`Farm API error for ID ${farmId}:`, errorMessage);
+        
+        // Check for specific error types
+        if (errorMessage.toLowerCase().includes('not found') || 
+            errorMessage.toLowerCase().includes('does not exist') ||
+            errorMessage.toLowerCase().includes('no record found')) {
+          console.log(`Farm with ID ${farmId} does not exist in database`);
+          // Don't show toast for record not found - let the UI handle it gracefully
           return null;
         }
-        toast.error(errorMessage);
+        
+        // For other API errors, show toast notification
+        if (errorMessage.toLowerCase().includes('unauthorized') || 
+            errorMessage.toLowerCase().includes('forbidden')) {
+          toast.error('Access denied: You do not have permission to view this farm');
+        } else if (errorMessage.toLowerCase().includes('timeout') || 
+                   errorMessage.toLowerCase().includes('network')) {
+          toast.error('Network error: Please check your connection and try again');
+        } else {
+          toast.error(`API Error: ${errorMessage}`);
+        }
         return null;
       }
       
+      // Validate response data structure
       if (!response.data) {
-        console.error('No farm data returned for ID:', id);
+        console.error(`No farm data returned for ID ${farmId}, but API response was successful`);
         return null;
       }
       
+      // Validate essential farm data fields
+      if (typeof response.data !== 'object') {
+        console.error(`Invalid farm data format for ID ${farmId}:`, typeof response.data);
+        return null;
+      }
+      
+      // Ensure the farm has required identifiers
+      if (!response.data.Id && !response.data.id) {
+        console.error(`Farm data missing ID field for requested ID ${farmId}:`, response.data);
+        return null;
+      }
+      
+      console.log(`Successfully fetched farm: ${response.data.Name || response.data.name || farmId}`);
       return response.data;
+      
     } catch (error) {
       console.error(`Error fetching farm with ID ${id}:`, error);
-      toast.error('Failed to fetch farm');
+      
+      // Enhanced error categorization
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        toast.error('Network error: Unable to connect to server');
+      } else if (error.name === 'AbortError') {
+        console.log('Farm fetch request was cancelled');
+        return null;
+      } else if (error.message?.includes('timeout')) {
+        toast.error('Request timeout: Server is taking too long to respond');
+      } else {
+        toast.error('Unexpected error occurred while fetching farm details');
+      }
+      
       return null;
     }
   }

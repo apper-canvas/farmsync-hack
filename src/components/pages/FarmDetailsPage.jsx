@@ -16,66 +16,137 @@ export default function FarmDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
+    let isMounted = true; // Track component mount state to prevent race conditions
+    
     if (id) {
-      loadFarmDetails();
+      loadFarmDetails(isMounted);
     }
+    
+    // Cleanup function to handle component unmount
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
-const loadFarmDetails = async () => {
+  const loadFarmDetails = async (isMounted = true) => {
+    if (!isMounted) return; // Prevent execution if component is unmounted
+    
     setLoading(true);
     setError(null);
     
     try {
-      // Validate farm ID before proceeding
-      const farmId = parseInt(id);
-      if (!farmId || isNaN(farmId)) {
-        setError("Invalid farm ID provided");
+      // Enhanced ID validation to handle various edge cases
+      if (!id || id === 'undefined' || id === 'null') {
+        setError("No farm ID provided. Please select a valid farm.");
+        return;
+      }
+      
+      const farmId = parseInt(id, 10);
+      if (isNaN(farmId) || farmId <= 0) {
+        setError("Invalid farm ID format. Please check the URL and try again.");
         return;
       }
 
+      // Validate component is still mounted before proceeding
+      if (!isMounted) return;
+
       // Load farm details first to validate existence
+      console.log(`Loading farm details for ID: ${farmId}`);
       const farmData = await farmService.getById(farmId);
 
+      // Check if component is still mounted after async operation
+      if (!isMounted) return;
+
       if (!farmData) {
-        setError("Farm not found. This field might not exist in your records.");
+        setError("Farm not found. This farm might have been deleted, moved, or the ID might be incorrect.");
+        return;
+      }
+
+      // Validate farm data structure
+      if (typeof farmData !== 'object' || !farmData.Id) {
+        setError("Invalid farm data received. Please try refreshing the page.");
         return;
       }
 
       setFarm(farmData);
+      console.log(`Successfully loaded farm: ${farmData.Name || farmData.name}`);
       
       // Load related data in parallel after confirming farm exists
-      const [allCrops, allTasks, allExpenses] = await Promise.all([
-        cropService.getAll(),
-        taskService.getAll(),
-        expenseService.getAll()
-      ]);
+      // Only proceed if component is still mounted
+      if (!isMounted) return;
       
-      // Filter related data by farm ID - handle both string and numeric IDs
-      const farmCrops = (allCrops || []).filter(crop => {
-        const cropFarmId = crop?.farm_id;
-        return cropFarmId == farmId || cropFarmId == id; // Use loose equality for type flexibility
-      });
+      try {
+        const [allCrops, allTasks, allExpenses] = await Promise.all([
+          cropService.getAll().catch(err => {
+            console.warn('Failed to load crops:', err);
+            return [];
+          }),
+          taskService.getAll().catch(err => {
+            console.warn('Failed to load tasks:', err);
+            return [];
+          }),
+          expenseService.getAll().catch(err => {
+            console.warn('Failed to load expenses:', err);
+            return [];
+          })
+        ]);
+        
+        // Final check if component is still mounted
+        if (!isMounted) return;
+        
+        // Filter related data by farm ID - handle both string and numeric IDs
+        const farmCrops = (allCrops || []).filter(crop => {
+          const cropFarmId = crop?.farm_id;
+          return cropFarmId == farmId || cropFarmId == id; // Use loose equality for type flexibility
+        });
+        
+        const farmTasks = (allTasks || []).filter(task => {
+          const taskFarmId = task?.farm_id;
+          return taskFarmId == farmId || taskFarmId == id;
+        });
+        
+        const farmExpenses = (allExpenses || []).filter(expense => {
+          const expenseFarmId = expense?.farm_id;
+          return expenseFarmId == farmId || expenseFarmId == id;
+        });
+        
+        setCrops(farmCrops);
+        setTasks(farmTasks);
+        setExpenses(farmExpenses);
+        
+        console.log(`Loaded related data - Crops: ${farmCrops.length}, Tasks: ${farmTasks.length}, Expenses: ${farmExpenses.length}`);
+        
+      } catch (relatedDataError) {
+        console.warn('Error loading related data, but farm details loaded successfully:', relatedDataError);
+        // Set empty arrays for related data but don't fail the entire operation
+        setCrops([]);
+        setTasks([]);
+        setExpenses([]);
+        toast.warning('Some related data could not be loaded');
+      }
       
-      const farmTasks = (allTasks || []).filter(task => {
-        const taskFarmId = task?.farm_id;
-        return taskFarmId == farmId || taskFarmId == id;
-      });
-      
-      const farmExpenses = (allExpenses || []).filter(expense => {
-        const expenseFarmId = expense?.farm_id;
-        return expenseFarmId == farmId || expenseFarmId == id;
-      });
-      
-      setCrops(farmCrops);
-      setTasks(farmTasks);
-      setExpenses(farmExpenses);
     } catch (err) {
       console.error('Error loading farm details:', err);
-      setError('Failed to load farm details. Please try again.');
-      toast.error('Failed to load farm details');
+      
+      // Categorize different types of errors for better user feedback
+      if (err.message?.includes('Network Error') || err.message?.includes('fetch')) {
+        setError('Network connection error. Please check your internet connection and try again.');
+        toast.error('Network connection error');
+      } else if (err.message?.includes('unauthorized') || err.message?.includes('forbidden')) {
+        setError('You do not have permission to view this farm.');
+        toast.error('Access denied');
+      } else if (err.message?.includes('timeout')) {
+        setError('Request timed out. The server might be busy. Please try again.');
+        toast.error('Request timed out');
+      } else {
+        setError('Failed to load farm details. Please try again or contact support if the problem persists.');
+        toast.error('Failed to load farm details');
+      }
     } finally {
-      setLoading(false);
+      if (isMounted) {
+        setLoading(false);
+      }
     }
   };
 
