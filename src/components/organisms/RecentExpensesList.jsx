@@ -4,6 +4,19 @@ import { Link } from 'react-router-dom';
 import ApperIcon from '@/components/ApperIcon';
 
 const RecentExpensesList = ({ expenses }) => {
+    // Validate and filter expenses to ensure they have valid data structure
+    const validExpenses = React.useMemo(() => {
+        if (!expenses || !Array.isArray(expenses)) {
+            return [];
+        }
+        
+        return expenses.filter(expense => 
+            expense && 
+            typeof expense === 'object' && 
+            (expense.id || expense.id === 0)
+        );
+    }, [expenses]);
+
     return (
         <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -24,7 +37,7 @@ const RecentExpensesList = ({ expenses }) => {
                 </Link>
             </div>
 
-            {expenses.length === 0 ? (
+            {validExpenses.length === 0 ? (
                 <div className="text-center py-8">
                     <ApperIcon name="Receipt" className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-gray-500">No expenses recorded yet</p>
@@ -37,25 +50,25 @@ const RecentExpensesList = ({ expenses }) => {
                 </div>
             ) : (
                 <div className="space-y-3">
-                    {expenses.map((expense, index) => (
+                    {validExpenses.map((expense, index) => (
                         <motion.div
-                            key={expense.id}
+                            key={expense.id ?? `expense-${index}`}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.05 }}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200"
                         >
-                            <div className="min-w-0 flex-1">
+<div className="min-w-0 flex-1">
                                 <p className="text-sm font-medium text-gray-900 truncate">
-                                    {expense.description}
+                                    {expense?.description ?? 'Unnamed Expense'}
                                 </p>
                                 <p className="text-xs text-gray-500 capitalize">
-                                    {expense.category} • {new Date(expense.date).toLocaleDateString()}
+                                    {expense?.category ?? 'Uncategorized'} • {expense?.date ? new Date(expense.date).toLocaleDateString() : 'No date'}
                                 </p>
                             </div>
                             <div className="flex-shrink-0">
                                 <p className="text-sm font-semibold text-gray-900">
-                                    ${expense.amount.toLocaleString()}
+                                    ${(expense?.amount ?? 0).toLocaleString()}
                                 </p>
                             </div>
                         </motion.div>
