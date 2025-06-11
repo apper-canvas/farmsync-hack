@@ -35,7 +35,7 @@ const weatherService = {
     }
   },
 
-  // Get weather forecast
+// Get weather forecast
   async getForecast(days = 5, location = null) {
     try {
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -49,12 +49,15 @@ const weatherService = {
           Math.floor(Math.random() * mockWeatherConditions.length)
         ];
         
+        // Standardized property names to match ForecastDisplay expectations
         forecast.push({
           date: forecastDate.toISOString(),
-          ...randomWeather,
-          highTemp: randomWeather.temperature + Math.round(Math.random() * 10),
-          lowTemp: randomWeather.temperature - Math.round(Math.random() * 15),
-          chanceOfRain: Math.round(Math.random() * 100),
+          condition: randomWeather.condition,
+          temperature: randomWeather.temperature,
+          humidity: randomWeather.humidity,
+          high: randomWeather.temperature + Math.round(Math.random() * 10), // Changed from highTemp
+          low: randomWeather.temperature - Math.round(Math.random() * 15),  // Changed from lowTemp
+          precipitation: Math.round(Math.random() * 100), // Changed from chanceOfRain
           windSpeed: Math.round(Math.random() * 20 + 5)
         });
       }
@@ -101,7 +104,7 @@ const weatherService = {
     }
   },
 
-  // Get historical weather data
+// Get historical weather data
   async getHistorical(startDate, endDate, location = null) {
     try {
       await new Promise(resolve => setTimeout(resolve, 600));
@@ -115,12 +118,15 @@ const weatherService = {
           Math.floor(Math.random() * mockWeatherConditions.length)
         ];
         
+        // Consistent property naming across all weather data
         historicalData.push({
           date: new Date(date).toISOString(),
-          ...randomWeather,
-          highTemp: randomWeather.temperature + Math.round(Math.random() * 10),
-          lowTemp: randomWeather.temperature - Math.round(Math.random() * 15),
-          precipitation: randomWeather.condition === 'rainy' ? Math.random() * 0.5 : 0,
+          condition: randomWeather.condition,
+          temperature: randomWeather.temperature,
+          humidity: randomWeather.humidity,
+          high: randomWeather.temperature + Math.round(Math.random() * 10), // Standardized
+          low: randomWeather.temperature - Math.round(Math.random() * 15),  // Standardized
+          precipitation: randomWeather.condition === 'rainy' ? Math.round(Math.random() * 50) : 0, // Percentage format
           windSpeed: Math.round(Math.random() * 25 + 5)
         });
       }
