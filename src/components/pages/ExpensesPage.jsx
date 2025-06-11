@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { isWithinInterval, startOfMonth, endOfMonth } from 'date-fns';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
 import PageHeader from '@/components/organisms/PageHeader';
@@ -7,18 +8,18 @@ import ExpenseFilters from '@/components/organisms/ExpenseFilters';
 import ExpenseStatsGrid from '@/components/organisms/ExpenseStatsGrid';
 import ExpenseFormModal from '@/components/organisms/ExpenseFormModal';
 import ExpensesList from '@/components/organisms/ExpensesList';
+import ExportModal from '@/components/organisms/ExportModal';
 import { expenseService, farmService } from '@/services';
-import { startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
-
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState([]);
   const [farms, setFarms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingExpense, setEditingExpense] = useState(null);
+const [editingExpense, setEditingExpense] = useState(null);
   const [filter, setFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('this_month');
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const categories = [
     { value: 'seeds', label: 'Seeds & Plants', icon: 'Sprout', color: 'text-green-600' },
@@ -255,15 +256,31 @@ export default function ExpensesPage() {
         onSubmit={handleSubmit}
       />
 
-      <ExpensesList 
+<ExpensesList 
         expenses={filteredExpenses} 
         farms={farms} 
         categories={categories}
         onEdit={handleEdit} 
         onDelete={handleDelete} 
         filter={filter}
-        onAddExpense={() => setShowAddForm(true)}
+        onAddExpense={(action) => {
+          if (action?.type === 'export') {
+            setShowExportModal(true);
+          } else {
+            setShowAddForm(true);
+          }
+        }}
       />
+
+      {showExportModal && (
+        <ExportModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          dataType="expenses"
+          data={filteredExpenses}
+          farms={farms}
+        />
+      )}
     </div>
   );
 }

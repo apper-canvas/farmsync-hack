@@ -3,20 +3,20 @@ import { toast } from 'react-toastify';
 import { cropService, farmService } from '@/services';
 import PageHeader from '@/components/organisms/PageHeader';
 import FilterButton from '@/components/molecules/FilterButton';
+import Button from '@/components/atoms/Button';
 import CropFormModal from '@/components/organisms/CropFormModal';
 import CropsTable from '@/components/organisms/CropsTable';
+import ExportModal from '@/components/organisms/ExportModal';
 import ApperIcon from '@/components/ApperIcon';
-import Button from '@/components/atoms/Button';
-
 export default function CropsPage() {
   const [crops, setCrops] = useState([]);
   const [farms, setFarms] = useState([]);
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCrop, setEditingCrop] = useState(null);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [filter, setFilter] = useState('all');
-
   useEffect(() => {
     loadData();
   }, []);
@@ -177,11 +177,27 @@ export default function CropsPage() {
       <CropsTable 
         crops={filteredCrops} 
         farms={farms} 
-        onEdit={handleEdit} 
+onEdit={handleEdit} 
         onDelete={handleDelete} 
         filter={filter}
-        onAddCrop={() => setShowAddForm(true)}
+        onAddCrop={(action) => {
+          if (action?.type === 'export') {
+            setShowExportModal(true);
+          } else {
+            setShowAddForm(true);
+          }
+        }}
       />
+
+      {showExportModal && (
+        <ExportModal
+          isOpen={showExportModal}
+          onClose={() => setShowExportModal(false)}
+          dataType="crops"
+          data={filteredCrops}
+          farms={farms}
+        />
+      )}
     </div>
   );
 }

@@ -46,8 +46,20 @@ const CropsTable = ({ crops, farms, onEdit, onDelete, filter, onAddCrop }) => {
         );
     }
 
-    return (
+return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900">Crops Overview</h3>
+                <Button
+                    onClick={() => onAddCrop({ type: 'export', data: crops })}
+                    className="flex items-center space-x-2 px-3 py-2 text-sm bg-surface-100 text-gray-700 rounded-lg hover:bg-surface-200 transition-colors"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                >
+                    <ApperIcon name="Download" className="h-4 w-4" />
+                    <span>Export</span>
+                </Button>
+            </div>
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">

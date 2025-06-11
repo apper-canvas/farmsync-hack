@@ -37,10 +37,22 @@ const ExpensesList = ({ expenses, farms, filter, onEdit, onDelete, onAddExpense 
                 onButtonClick={onAddExpense}
             />
         );
-    }
+}
 
     return (
         <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium text-gray-900">Recent Expenses</h3>
+                <Button
+                    onClick={() => onAddExpense({ type: 'export', data: expenses })}
+                    className="flex items-center space-x-2 px-3 py-2 text-sm bg-surface-100 text-gray-700 rounded-lg hover:bg-surface-200 transition-colors"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                >
+                    <ApperIcon name="Download" className="h-4 w-4" />
+                    <span>Export</span>
+                </Button>
+            </div>
             {expenses.map((expense, index) => {
                 const categoryInfo = getCategoryInfo(expense.category);
                 
