@@ -3,6 +3,7 @@ import Label from '@/components/atoms/Label';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import TextArea from '@/components/atoms/TextArea';
+import ApperIcon from '@/components/ApperIcon';
 
 const FormField = ({ label, id, type, value, onChange, options, placeholder, required, min, step, rows, children, prefixIcon, prefixText, ...rest }) => {
     const inputProps = { id, value, onChange, placeholder, required, ...rest };
