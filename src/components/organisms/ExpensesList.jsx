@@ -53,12 +53,17 @@ const ExpensesList = ({ expenses, farms, filter, onEdit, onDelete, onAddExpense 
                     <span>Export</span>
                 </Button>
             </div>
-            {expenses.map((expense, index) => {
-                const categoryInfo = getCategoryInfo(expense.category);
+{expenses.map((expense, index) => {
+                // Validate expense object and provide fallback data
+                if (!expense || typeof expense !== 'object') {
+                    return null;
+                }
+                
+                const categoryInfo = getCategoryInfo(expense?.category);
                 
                 return (
                     <motion.div
-                        key={expense.id}
+                        key={expense?.id || expense?.Id || `expense-${index}`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
@@ -79,22 +84,22 @@ const ExpensesList = ({ expenses, farms, filter, onEdit, onDelete, onAddExpense 
                                             {categoryInfo.label}
                                         </h3>
                                         <span className="text-2xl font-bold text-gray-900">
-                                            ${expense.amount.toLocaleString()}
+                                            ${expense?.amount?.toLocaleString() || '0'}
                                         </span>
                                     </div>
                                     
                                     <div className="flex items-center space-x-4 text-sm text-gray-600">
                                         <span className="flex items-center">
                                             <ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
-                                            {getFarmName(expense.farmId)}
+                                            {getFarmName(expense?.farmId || expense?.farm_id)}
                                         </span>
                                         <span className="flex items-center">
                                             <ApperIcon name="Calendar" className="h-4 w-4 mr-1" />
-                                            {format(new Date(expense.date), 'MMM d, yyyy')}
+                                            {expense?.date ? format(new Date(expense.date), 'MMM d, yyyy') : 'Date not available'}
                                         </span>
                                     </div>
                                     
-                                    {expense.description && (
+                                    {expense?.description && (
                                         <p className="text-gray-600 mt-2 break-words">
                                             {expense.description}
                                         </p>
