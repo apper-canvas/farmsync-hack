@@ -1,10 +1,10 @@
-import Dashboard from '../pages/Dashboard'
-import Farms from '../pages/Farms'
-import Crops from '../pages/Crops'
-import Tasks from '../pages/Tasks'
-import Weather from '../pages/Weather'
-import Expenses from '../pages/Expenses'
-import NotFound from '../pages/NotFound'
+import DashboardPage from '@/components/pages/DashboardPage';
+import FarmsPage from '@/components/pages/FarmsPage';
+import CropsPage from '@/components/pages/CropsPage';
+import TasksPage from '@/components/pages/TasksPage';
+import WeatherPage from '@/components/pages/WeatherPage';
+import ExpensesPage from '@/components/pages/ExpensesPage';
+import NotFoundPage from '@/components/pages/NotFoundPage';
 
 export const routes = {
   dashboard: {
@@ -12,49 +12,49 @@ export const routes = {
     label: 'Dashboard',
     path: '/dashboard',
     icon: 'LayoutDashboard',
-    component: Dashboard
+component: DashboardPage
   },
   farms: {
     id: 'farms',
     label: 'Farms',
     path: '/farms',
     icon: 'MapPin',
-    component: Farms
+component: FarmsPage
   },
   crops: {
     id: 'crops',
     label: 'Crops',
     path: '/crops',
     icon: 'Wheat',
-    component: Crops
+component: CropsPage
   },
   tasks: {
     id: 'tasks',
     label: 'Tasks',
     path: '/tasks',
     icon: 'CheckSquare',
-    component: Tasks
+component: TasksPage
   },
   weather: {
     id: 'weather',
     label: 'Weather',
     path: '/weather',
     icon: 'Cloud',
-    component: Weather
+component: WeatherPage
   },
   expenses: {
     id: 'expenses',
     label: 'Expenses',
     path: '/expenses',
     icon: 'DollarSign',
-    component: Expenses
+component: ExpensesPage
   },
   notfound: {
     id: 'notfound',
     label: 'Not Found',
     path: '*',
     icon: 'AlertCircle',
-    component: NotFound
+component: NotFoundPage
   }
 }
 

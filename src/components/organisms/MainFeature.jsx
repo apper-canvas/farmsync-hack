@@ -1,75 +1,78 @@
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { toast } from 'react-toastify'
-import ApperIcon from './ApperIcon'
-import { taskService, weatherService } from '../services'
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import ApperIcon from '@/components/ApperIcon';
+import Button from '@/components/atoms/Button';
+import { taskService, weatherService } from '@/services';
 
-export default function MainFeature() {
-  const [tasks, setTasks] = useState([])
-  const [weather, setWeather] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+const MainFeature = () => {
+  const [tasks, setTasks] = useState([]);
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true)
-      setError(null)
+      setLoading(true);
+      setError(null);
       try {
         const [taskData, weatherData] = await Promise.all([
           taskService.getAll(),
           weatherService.getCurrentWeather()
-        ])
+        ]);
         
         // Get pending tasks for today and next 3 days
-        const now = new Date()
-        const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000)
+        const now = new Date();
+        const threeDaysFromNow = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
         
         const upcomingTasks = taskData.filter(task => {
-          if (task.completed) return false
-          const taskDate = new Date(task.dueDate)
-          return taskDate >= now && taskDate <= threeDaysFromNow
-        }).slice(0, 5)
+          if (task.completed) return false;
+          const taskDate = new Date(task.dueDate);
+          // Check if taskDate is within the next 3 days, inclusive of today
+          return taskDate.setHours(0,0,0,0) >= now.setHours(0,0,0,0) && 
+                 taskDate.setHours(0,0,0,0) <= threeDaysFromNow.setHours(0,0,0,0);
+        }).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)).slice(0, 5);
         
-        setTasks(upcomingTasks)
-        setWeather(weatherData)
+        setTasks(upcomingTasks);
+        setWeather(weatherData);
       } catch (err) {
-        setError(err.message || 'Failed to load data')
-        toast.error('Failed to load dashboard data')
+        setError(err.message || 'Failed to load data');
+        toast.error('Failed to load dashboard data');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    loadData()
-  }, [])
+    };
+    loadData();
+  }, []);
 
   const handleCompleteTask = async (taskId) => {
     try {
-      const task = tasks.find(t => t.id === taskId)
-      await taskService.update(taskId, { ...task, completed: true })
-      setTasks(tasks.filter(t => t.id !== taskId))
-      toast.success('Task completed!')
+      const task = tasks.find(t => t.id === taskId);
+      await taskService.update(taskId, { ...task, completed: true });
+      setTasks(tasks.filter(t => t.id !== taskId));
+      toast.success('Task completed!');
     } catch (err) {
-      toast.error('Failed to complete task')
+      toast.error('Failed to complete task');
     }
-  }
+  };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high': return 'text-error bg-red-50 border-red-200'
-      case 'medium': return 'text-warning bg-yellow-50 border-yellow-200'
-      default: return 'text-info bg-blue-50 border-blue-200'
+      case 'high': return 'text-error bg-red-50 border-red-200';
+      case 'medium': return 'text-warning bg-yellow-50 border-yellow-200';
+      default: return 'text-info bg-blue-50 border-blue-200';
     }
-  }
+  };
 
   const getWeatherIcon = (condition) => {
     switch (condition) {
-      case 'sunny': return 'Sun'
-      case 'cloudy': return 'Cloud'
-      case 'rainy': return 'CloudRain'
-      case 'stormy': return 'CloudLightning'
-      default: return 'Cloud'
+      case 'sunny': return 'Sun';
+      case 'cloudy': return 'Cloud';
+      case 'rainy': return 'CloudRain';
+      case 'stormy': return 'CloudLightning';
+      default: return 'Cloud';
     }
-  }
+  };
 
   if (loading) {
     return (
@@ -98,7 +101,7 @@ export default function MainFeature() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
@@ -107,14 +110,14 @@ export default function MainFeature() {
         <ApperIcon name="AlertCircle" className="h-12 w-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">Failed to load dashboard</h3>
         <p className="text-gray-500 mb-4">{error}</p>
-        <button
+        <Button
           onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
         >
           Try Again
-        </button>
+        </Button>
       </div>
-    )
+    );
   }
 
   return (
@@ -189,9 +192,11 @@ export default function MainFeature() {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center space-x-3 min-w-0 flex-1">
-                    <button
+                    <Button
                       onClick={() => handleCompleteTask(task.id)}
-                      className="flex-shrink-0 h-5 w-5 rounded border-2 border-gray-300 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+                      className="flex-shrink-0 h-5 w-5 rounded border-2 border-gray-300 hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                     />
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-gray-900 truncate">
@@ -217,5 +222,7 @@ export default function MainFeature() {
         </motion.div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default MainFeature;

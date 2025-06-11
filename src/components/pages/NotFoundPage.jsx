@@ -1,8 +1,9 @@
-import { motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
-import ApperIcon from '../components/ApperIcon'
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import ApperIcon from '@/components/ApperIcon';
+import Button from '@/components/atoms/Button';
 
-export default function NotFound() {
+export default function NotFoundPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-50 px-4">
       <div className="max-w-md w-full text-center">
@@ -36,15 +37,15 @@ export default function NotFound() {
           </p>
           
           <div className="space-y-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 space-x-2">
               <Link
                 to="/dashboard"
-                className="inline-flex items-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-colors space-x-2"
+                className="flex items-center space-x-2"
               >
                 <ApperIcon name="Home" className="h-5 w-5" />
                 <span>Back to Dashboard</span>
               </Link>
-            </motion.div>
+            </Button>
             
             <div className="flex items-center justify-center space-x-4 text-sm">
               <Link 
@@ -75,5 +76,5 @@ export default function NotFound() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
