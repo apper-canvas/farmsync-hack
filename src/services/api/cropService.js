@@ -269,9 +269,9 @@ async update(id, updateData) {
       
       if (response.results) {
         const successfulDeletions = response.results.filter(result => result.success);
-        const failedDeletions = response.results.filter(result => !result.success);
+const failedDeletions = response.results.filter(result => !result.success);
         
-if (failedDeletions.length > 0) {
+        if (failedDeletions.length > 0) {
           console.error(`Failed to delete ${failedDeletions.length} records:`, JSON.stringify(failedDeletions, null, 2));
           failedDeletions.forEach(record => {
             if (record.message) toast.error(record.message);

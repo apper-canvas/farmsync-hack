@@ -58,9 +58,17 @@ const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+        
+        if (editingCrop && formData.id) {
+            // For updates, pass ID separately from the data
+            const { id, ...updateData } = formData;
+            onSubmit(id, updateData);
+        } else {
+            // For creates, pass all form data
+            onSubmit(formData);
+        }
     };
 
     return (
