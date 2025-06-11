@@ -120,16 +120,73 @@ export default function TasksPage() {
     setShowAddForm(false);
   };
 
-  const filteredTasks = tasks.filter(task => {
-    if (filter === 'pending') return !task.completed;
-    if (filter === 'completed') return task.completed;
-    if (filter === 'overdue') return !task.completed && isBefore(new Date(task.dueDate), new Date()) && !isToday(new Date(task.dueDate));
-    if (filter === 'today') return !task.completed && isToday(new Date(task.dueDate));
+const filteredTasks = tasks?.filter(task => {
+    // Validate task object exists
+    if (!task) {
+      console.warn('TasksPage: Encountered null/undefined task in filter');
+      return false;
+    }
+
+    // Safe access to completed property with fallback
+    const isCompleted = task?.completed ?? false;
+    
+    if (filter === 'pending') return !isCompleted;
+    if (filter === 'completed') return isCompleted;
+    
+    // Safe date handling for overdue and today filters
+    if (filter === 'overdue') {
+      const dueDate = task?.dueDate || task?.due_date;
+      if (!dueDate) return false;
+      
+      try {
+        const taskDueDate = new Date(dueDate);
+        if (isNaN(taskDueDate.getTime())) return false;
+        
+        return !isCompleted && isBefore(taskDueDate, new Date()) && !isToday(taskDueDate);
+      } catch (error) {
+        console.warn('TasksPage: Invalid due date for overdue filter:', dueDate);
+        return false;
+      }
+    }
+    
+    if (filter === 'today') {
+      const dueDate = task?.dueDate || task?.due_date;
+      if (!dueDate) return false;
+      
+      try {
+        const taskDueDate = new Date(dueDate);
+        if (isNaN(taskDueDate.getTime())) return false;
+        
+        return !isCompleted && isToday(taskDueDate);
+      } catch (error) {
+        console.warn('TasksPage: Invalid due date for today filter:', dueDate);
+        return false;
+      }
+    }
+    
     return true;
-  }).sort((a, b) => {
-    if (a.completed !== b.completed) return a.completed - b.completed;
-    return new Date(a.dueDate) - new Date(b.dueDate);
-  });
+  })?.sort((a, b) => {
+    // Safe comparison with null checks
+    const aCompleted = a?.completed ?? false;
+    const bCompleted = b?.completed ?? false;
+    
+    if (aCompleted !== bCompleted) return aCompleted - bCompleted;
+    
+    // Safe date comparison
+    try {
+      const aDate = new Date(a?.dueDate || a?.due_date || '9999-12-31');
+      const bDate = new Date(b?.dueDate || b?.due_date || '9999-12-31');
+      
+      if (isNaN(aDate.getTime()) || isNaN(bDate.getTime())) {
+        return 0; // Keep original order if dates are invalid
+      }
+      
+      return aDate - bDate;
+    } catch (error) {
+      console.warn('TasksPage: Error sorting tasks by date:', error);
+      return 0;
+    }
+  }) || [];
 
   if (loading) {
     return (
