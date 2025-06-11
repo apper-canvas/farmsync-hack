@@ -24,16 +24,16 @@ const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
         field: ''
     });
 
-    useEffect(() => {
+useEffect(() => {
         if (editingCrop) {
             setFormData({
-                farmId: editingCrop.farmId,
-                name: editingCrop.name,
-                variety: editingCrop.variety,
-                plantingDate: editingCrop.plantingDate,
-                expectedHarvestDate: editingCrop.expectedHarvestDate,
-                growthStage: editingCrop.growthStage,
-                field: editingCrop.field
+                farmId: editingCrop.farmId ?? '',
+                name: editingCrop.name ?? '',
+                variety: editingCrop.variety ?? '',
+                plantingDate: editingCrop.plantingDate ?? '',
+                expectedHarvestDate: editingCrop.expectedHarvestDate ?? '',
+                growthStage: editingCrop.growthStage ?? 'planted',
+                field: editingCrop.field ?? ''
             });
         } else {
             setFormData({
@@ -66,10 +66,10 @@ const CropFormModal = ({ isOpen, onClose, editingCrop, farms, onSubmit }) => {
                     id="farmId"
                     name="farmId"
                     type="select"
-value={formData.farmId}
+value={formData.farmId ?? ''}
                     onChange={handleChange}
                     options={farms?.map((farm, index) => ({ 
-                        value: farm?.id ?? farm?.Id ?? index, 
+                        value: String(farm?.id ?? farm?.Id ?? index), 
                         label: farm?.name ?? farm?.Name ?? `Farm ${index + 1}`,
                         id: farm?.id ?? farm?.Id ?? index
                     })) || []}
@@ -83,7 +83,7 @@ value={formData.farmId}
                         id="name"
                         name="name"
                         type="text"
-                        value={formData.name}
+value={formData.name ?? ''}
                         onChange={handleChange}
                         placeholder="e.g., Tomatoes"
                         required
@@ -93,7 +93,7 @@ value={formData.farmId}
                         id="variety"
                         name="variety"
                         type="text"
-                        value={formData.variety}
+                        value={formData.variety ?? ''}
                         onChange={handleChange}
                         placeholder="e.g., Cherry"
                     />
@@ -104,7 +104,7 @@ value={formData.farmId}
                     id="field"
                     name="field"
                     type="text"
-                    value={formData.field}
+value={formData.field ?? ''}
                     onChange={handleChange}
                     placeholder="e.g., North Field, Greenhouse A"
                 />
@@ -115,7 +115,7 @@ value={formData.farmId}
                         id="plantingDate"
                         name="plantingDate"
                         type="date"
-                        value={formData.plantingDate}
+value={formData.plantingDate ?? ''}
                         onChange={handleChange}
                         required
                     />
@@ -124,7 +124,7 @@ value={formData.farmId}
                         id="expectedHarvestDate"
                         name="expectedHarvestDate"
                         type="date"
-                        value={formData.expectedHarvestDate}
+                        value={formData.expectedHarvestDate ?? ''}
                         onChange={handleChange}
                         required
                     />
@@ -135,7 +135,7 @@ value={formData.farmId}
                     id="growthStage"
                     name="growthStage"
                     type="select"
-                    value={formData.growthStage}
+value={formData.growthStage ?? 'planted'}
                     onChange={handleChange}
                     options={growthStages}
                 />
