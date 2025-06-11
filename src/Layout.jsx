@@ -8,13 +8,14 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
 
-  const mainNavRoutes = [
+const mainNavRoutes = [
     routes.dashboard,
     routes.farms,
     routes.crops,
     routes.tasks,
     routes.weather,
-    routes.expenses
+    routes.expenses,
+    routes.income
   ]
 
   const toggleMobileMenu = () => {
