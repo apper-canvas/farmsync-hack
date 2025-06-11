@@ -5,7 +5,7 @@ import TasksPage from '@/components/pages/TasksPage';
 import WeatherPage from '@/components/pages/WeatherPage';
 import ExpensesPage from '@/components/pages/ExpensesPage';
 import NotFoundPage from '@/components/pages/NotFoundPage';
-
+import FarmDetailsPage from '@/components/pages/FarmDetailsPage';
 export const routes = {
   dashboard: {
     id: 'dashboard',
@@ -48,13 +48,20 @@ component: WeatherPage
     path: '/expenses',
     icon: 'DollarSign',
 component: ExpensesPage
+},
+  farmDetails: {
+    id: 'farmDetails',
+    label: 'Farm Details',
+    path: '/farms/:id',
+    icon: 'MapPin',
+    component: FarmDetailsPage
   },
   notfound: {
     id: 'notfound',
     label: 'Not Found',
     path: '*',
     icon: 'AlertCircle',
-component: NotFoundPage
+    component: NotFoundPage
   }
 }
 
