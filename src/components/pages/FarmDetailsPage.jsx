@@ -22,37 +22,57 @@ export default function FarmDetailsPage() {
     }
   }, [id]);
 
-  const loadFarmDetails = async () => {
+const loadFarmDetails = async () => {
     setLoading(true);
     setError(null);
     
     try {
-      // Load farm details and related data in parallel
-      const [farmData, allCrops, allTasks, allExpenses] = await Promise.all([
-        farmService.getById(parseInt(id)),
-        cropService.getAll(),
-        taskService.getAll(),
-        expenseService.getAll()
-      ]);
+      // Validate farm ID before proceeding
+      const farmId = parseInt(id);
+      if (!farmId || isNaN(farmId)) {
+        setError("Invalid farm ID provided");
+        return;
+      }
+
+      // Load farm details first to validate existence
+      const farmData = await farmService.getById(farmId);
 
       if (!farmData) {
-        setError("Looks like this field hasn't been planted yet");
+        setError("Farm not found. This field might not exist in your records.");
         return;
       }
 
       setFarm(farmData);
       
-      // Filter related data by farm ID
-      const farmCrops = allCrops.filter(crop => crop.farm_id === parseInt(id));
-      const farmTasks = allTasks.filter(task => task.farm_id === parseInt(id));
-      const farmExpenses = allExpenses.filter(expense => expense.farm_id === parseInt(id));
+      // Load related data in parallel after confirming farm exists
+      const [allCrops, allTasks, allExpenses] = await Promise.all([
+        cropService.getAll(),
+        taskService.getAll(),
+        expenseService.getAll()
+      ]);
+      
+      // Filter related data by farm ID - handle both string and numeric IDs
+      const farmCrops = (allCrops || []).filter(crop => {
+        const cropFarmId = crop?.farm_id;
+        return cropFarmId == farmId || cropFarmId == id; // Use loose equality for type flexibility
+      });
+      
+      const farmTasks = (allTasks || []).filter(task => {
+        const taskFarmId = task?.farm_id;
+        return taskFarmId == farmId || taskFarmId == id;
+      });
+      
+      const farmExpenses = (allExpenses || []).filter(expense => {
+        const expenseFarmId = expense?.farm_id;
+        return expenseFarmId == farmId || expenseFarmId == id;
+      });
       
       setCrops(farmCrops);
       setTasks(farmTasks);
       setExpenses(farmExpenses);
     } catch (err) {
       console.error('Error loading farm details:', err);
-      setError('Failed to load farm details');
+      setError('Failed to load farm details. Please try again.');
       toast.error('Failed to load farm details');
     } finally {
       setLoading(false);
@@ -102,13 +122,16 @@ export default function FarmDetailsPage() {
     );
   }
 
-  if (error) {
+if (error) {
     return (
       <div className="p-6">
         <div className="text-center py-12">
           <ApperIcon name="AlertCircle" className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">Farm Not Found</h3>
           <p className="text-gray-500 mb-4">{error}</p>
+          <p className="text-sm text-gray-400 mb-6">
+            The farm you're looking for might have been moved, deleted, or the URL might be incorrect.
+          </p>
           <div className="space-x-4">
             <Button
               onClick={() => navigate('/farms')}
@@ -137,10 +160,10 @@ export default function FarmDetailsPage() {
       {/* Breadcrumb Navigation */}
       <nav className="flex items-center space-x-2 text-sm text-gray-500">
         <Link to="/farms" className="hover:text-gray-700 transition-colors">
-          Farms
+Farms
         </Link>
         <ApperIcon name="ChevronRight" className="h-4 w-4" />
-        <span className="text-gray-900">{farm.Name}</span>
+        <span className="text-gray-900">{farm?.Name || 'Farm Details'}</span>
       </nav>
 
       {/* Page Header */}
@@ -151,11 +174,11 @@ export default function FarmDetailsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl font-heading font-bold text-gray-900 mb-2"
           >
-            {farm.Name}
+            {farm?.Name || 'Farm Details'}
           </motion.h1>
           <div className="flex items-center text-gray-500">
             <ApperIcon name="MapPin" className="h-4 w-4 mr-1" />
-            <span>{farm.location}</span>
+            <span>{farm?.location || 'Location not specified'}</span>
           </div>
         </div>
         <div className="flex space-x-3 flex-shrink-0 ml-4">
@@ -192,37 +215,39 @@ export default function FarmDetailsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Farm Name
+Farm Name
                 </label>
-                <p className="text-gray-900">{farm.Name}</p>
+                <p className="text-gray-900">{farm?.Name || 'N/A'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Location
                 </label>
-                <p className="text-gray-900">{farm.location}</p>
+                <p className="text-gray-900">{farm?.location || 'Not specified'}</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Size
                 </label>
-                <p className="text-gray-900">{farm.size} {farm.size_unit}</p>
+                <p className="text-gray-900">
+                  {farm?.size ? `${farm.size} ${farm?.size_unit || 'units'}` : 'Not specified'}
+                </p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Created Date
                 </label>
                 <p className="text-gray-900">
-                  {farm.created_at ? new Date(farm.created_at).toLocaleDateString() : 'N/A'}
+                  {farm?.created_at ? new Date(farm.created_at).toLocaleDateString() : 'N/A'}
                 </p>
               </div>
-              {farm.Tags && (
+              {farm?.Tags && (
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tags
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {farm.Tags.split(',').filter(tag => tag.trim()).map((tag, index) => (
+                    {farm.Tags.split(',').filter(tag => tag?.trim()).map((tag, index) => (
                       <span 
                         key={index}
                         className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
@@ -245,10 +270,10 @@ export default function FarmDetailsPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-heading font-semibold text-gray-900">
-                Active Crops ({crops.length})
+Active Crops ({crops?.length || 0})
               </h2>
               <Link 
-                to={`/crops?farmId=${farm.Id}`}
+                to={`/crops?farmId=${farm?.Id || id}`}
                 className="text-sm text-primary hover:text-primary/80 font-medium"
               >
                 View All Crops →
@@ -333,10 +358,10 @@ export default function FarmDetailsPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-heading font-semibold text-gray-900">
-                Recent Tasks
+Recent Tasks
               </h3>
               <Link 
-                to={`/tasks?farmId=${farm.Id}`}
+                to={`/tasks?farmId=${farm?.Id || id}`}
                 className="text-sm text-primary hover:text-primary/80 font-medium"
               >
                 View All →
@@ -379,10 +404,10 @@ export default function FarmDetailsPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-heading font-semibold text-gray-900">
-                Recent Expenses
+Recent Expenses
               </h3>
               <Link 
-                to={`/expenses?farmId=${farm.Id}`}
+                to={`/expenses?farmId=${farm?.Id || id}`}
                 className="text-sm text-primary hover:text-primary/80 font-medium"
               >
                 View All →

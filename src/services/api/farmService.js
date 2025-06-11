@@ -30,7 +30,7 @@ class FarmService {
     }
   }
 
-  async getById(id) {
+async getById(id) {
     try {
       const params = {
         fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "size", "size_unit", "location", "created_at"]
@@ -38,9 +38,19 @@ class FarmService {
       
       const response = await apperClient.getRecordById('farm', id, params);
       
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
+      if (!response || !response.success) {
+        const errorMessage = response?.message || 'Farm record not found';
+        console.error('Farm not found:', errorMessage);
+        if (errorMessage.toLowerCase().includes('not found') || errorMessage.toLowerCase().includes('does not exist')) {
+          // Don't show toast for record not found - let the UI handle it
+          return null;
+        }
+        toast.error(errorMessage);
+        return null;
+      }
+      
+      if (!response.data) {
+        console.error('No farm data returned for ID:', id);
         return null;
       }
       
