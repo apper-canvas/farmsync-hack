@@ -114,7 +114,6 @@ useEffect(() => {
             });
         }
     }, [editingExpense, farms, validatedFarms.length]);
-
 const handleChange = (e) => {
         // Enhanced validation for form field changes
         if (!e || !e.target) {
@@ -134,7 +133,6 @@ const handleChange = (e) => {
         
         setFormData(prev => ({ ...prev, [name]: value }));
     };
-
     const handleSubmit = (e) => {
         e.preventDefault();
         

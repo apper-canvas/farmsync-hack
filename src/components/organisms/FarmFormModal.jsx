@@ -14,9 +14,9 @@ const FarmFormModal = ({ isOpen, onClose, editingFarm, onSubmit }) => {
 useEffect(() => {
         if (editingFarm) {
             setFormData({
-                name: editingFarm?.name ?? '',
+                name: editingFarm?.name ?? editingFarm?.Name ?? '',
                 size: editingFarm?.size?.toString() ?? '',
-                sizeUnit: editingFarm?.sizeUnit ?? 'acres',
+                sizeUnit: editingFarm?.sizeUnit ?? editingFarm?.size_unit ?? 'acres',
                 location: editingFarm?.location ?? ''
             });
         } else {
