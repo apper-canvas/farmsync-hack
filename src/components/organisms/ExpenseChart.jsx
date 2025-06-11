@@ -7,6 +7,19 @@ import Button from '@/components/atoms/Button';
 const ExpenseChart = ({ expenses, categories, filter, dateFilter }) => {
   const [chartType, setChartType] = useState('pie');
 
+  // Helper function to convert Tailwind color classes to hex values
+  const getCategoryColor = (colorClass) => {
+    const colorMap = {
+      'text-green-600': '#059669',
+      'text-blue-600': '#2563EB',
+      'text-purple-600': '#9333EA',
+      'text-orange-600': '#EA580C',
+      'text-red-600': '#DC2626',
+      'text-gray-600': '#4B5563'
+    };
+    return colorMap[colorClass] || '#94A3B8';
+  };
+
   // Transform and validate expense data for charts
   const chartData = useMemo(() => {
     if (!expenses || !Array.isArray(expenses) || expenses.length === 0) {
@@ -73,19 +86,6 @@ const ExpenseChart = ({ expenses, categories, filter, dateFilter }) => {
       totalAmount: series.reduce((sum, amount) => sum + amount, 0)
     };
   }, [expenses, categories]);
-
-  // Helper function to convert Tailwind color classes to hex values
-  const getCategoryColor = (colorClass) => {
-    const colorMap = {
-      'text-green-600': '#059669',
-      'text-blue-600': '#2563EB',
-      'text-purple-600': '#9333EA',
-      'text-orange-600': '#EA580C',
-      'text-red-600': '#DC2626',
-      'text-gray-600': '#4B5563'
-    };
-    return colorMap[colorClass] || '#94A3B8';
-  };
 
   // Chart configuration for pie chart
   const pieOptions = {
