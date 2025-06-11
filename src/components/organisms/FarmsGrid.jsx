@@ -4,7 +4,7 @@ import EmptyState from '@/components/molecules/EmptyState';
 
 const FarmsGrid = ({ farms, crops, onEdit, onDelete, onAddFarm }) => {
     const getCropCountForFarm = (farmId) => {
-        return crops.filter(crop => crop.farmId === farmId).length;
+        return crops.filter(crop => crop.farm_id === farmId).length;
     };
 
     if (farms.length === 0) {
@@ -21,11 +21,11 @@ const FarmsGrid = ({ farms, crops, onEdit, onDelete, onAddFarm }) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {farms.map((farm, index) => (
+{farms.map((farm, index) => (
                 <FarmCard
-                    key={farm.id}
+                    key={farm.Id || farm.id || index}
                     farm={farm}
-                    cropCount={getCropCountForFarm(farm.id)}
+                    cropCount={getCropCountForFarm(farm.Id || farm.id)}
                     onEdit={onEdit}
                     onDelete={onDelete}
                     index={index}
