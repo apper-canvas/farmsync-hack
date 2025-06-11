@@ -119,11 +119,11 @@ return (
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                        {crops.map((crop, index) => {
+{crops.map((crop, index) => {
                             const stageInfo = getStageInfo(crop.growthStage);
                             return (
                                 <motion.tr
-                                    key={crop.id}
+                                    key={crop.id || crop.Id || index}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: index * 0.05 }}
