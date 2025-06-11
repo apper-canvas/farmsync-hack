@@ -4,6 +4,7 @@ import CropsPage from '@/components/pages/CropsPage';
 import TasksPage from '@/components/pages/TasksPage';
 import WeatherPage from '@/components/pages/WeatherPage';
 import ExpensesPage from '@/components/pages/ExpensesPage';
+import CropIncomePage from '@/components/pages/CropIncomePage';
 import NotFoundPage from '@/components/pages/NotFoundPage';
 import FarmDetailsPage from '@/components/pages/FarmDetailsPage';
 export const routes = {
@@ -49,12 +50,12 @@ expenses: {
     icon: 'DollarSign',
     component: ExpensesPage
   },
-  income: {
+income: {
     id: 'income',
     label: 'Income',
     path: '/income',
     icon: 'TrendingUp',
-    component: () => import('@/components/pages/CropIncomePage').then(module => ({ default: module.default }))
+    component: CropIncomePage
   },
   farmDetails: {
     id: 'farmDetails',
