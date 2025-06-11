@@ -1,57 +1,203 @@
-import expenseData from '../mockData/expenses.json'
+import { toast } from 'react-toastify';
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 class ExpenseService {
-  constructor() {
-    this.expenses = [...expenseData]
-  }
-
   async getAll() {
-    await delay(300)
-    return [...this.expenses]
+    try {
+      const params = {
+        fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "category", "amount", "date", "description", "farm_id"]
+      };
+      
+      const response = await apperClient.fetchRecords('expense', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      toast.error('Failed to fetch expenses');
+      return [];
+    }
   }
 
   async getById(id) {
-    await delay(250)
-    const expense = this.expenses.find(e => e.id === id)
-    if (!expense) {
-      throw new Error('Expense not found')
+    try {
+      const params = {
+        fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "category", "amount", "date", "description", "farm_id"]
+      };
+      
+      const response = await apperClient.getRecordById('expense', id, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching expense with ID ${id}:`, error);
+      toast.error('Failed to fetch expense');
+      return null;
     }
-    return { ...expense }
   }
 
   async create(expenseData) {
-    await delay(400)
-    const newExpense = {
-      id: Date.now().toString(),
-      ...expenseData
+    try {
+      // Only include Updateable fields
+      const params = {
+        records: [{
+          Name: expenseData.name || expenseData.Name || expenseData.description || "Expense",
+          Tags: expenseData.tags || expenseData.Tags || "",
+          Owner: expenseData.owner || expenseData.Owner,
+          category: expenseData.category,
+          amount: parseFloat(expenseData.amount) || 0, // Currency field as float
+          date: expenseData.date, // Date format YYYY-MM-DD
+          description: expenseData.description,
+          farm_id: parseInt(expenseData.farmId || expenseData.farm_id) // Lookup field as integer
+        }]
+      };
+      
+      const response = await apperClient.createRecord('expense', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${failedRecords}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          toast.success('Expense created successfully');
+          return successfulRecords[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error creating expense:', error);
+      toast.error('Failed to create expense');
+      return null;
     }
-    this.expenses.push(newExpense)
-    return { ...newExpense }
   }
 
   async update(id, updateData) {
-    await delay(350)
-    const index = this.expenses.findIndex(e => e.id === id)
-    if (index === -1) {
-      throw new Error('Expense not found')
+    try {
+      // Only include Updateable fields
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.name || updateData.Name || updateData.description || "Expense",
+          Tags: updateData.tags || updateData.Tags || "",
+          Owner: updateData.owner || updateData.Owner,
+          category: updateData.category,
+          amount: parseFloat(updateData.amount) || 0, // Currency field as float
+          date: updateData.date, // Date format YYYY-MM-DD
+          description: updateData.description,
+          farm_id: parseInt(updateData.farmId || updateData.farm_id) // Lookup field as integer
+        }]
+      };
+      
+      const response = await apperClient.updateRecord('expense', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update ${failedUpdates.length} records:${failedUpdates}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulUpdates.length > 0) {
+          toast.success('Expense updated successfully');
+          return successfulUpdates[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error updating expense:', error);
+      toast.error('Failed to update expense');
+      return null;
     }
-    
-    this.expenses[index] = { ...this.expenses[index], ...updateData }
-    return { ...this.expenses[index] }
   }
 
   async delete(id) {
-    await delay(300)
-    const index = this.expenses.findIndex(e => e.id === id)
-    if (index === -1) {
-      throw new Error('Expense not found')
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('expense', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete ${failedDeletions.length} records:${failedDeletions}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulDeletions.length > 0) {
+          toast.success('Expense deleted successfully');
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error deleting expense:', error);
+      toast.error('Failed to delete expense');
+      return false;
     }
-    
-    this.expenses.splice(index, 1)
-    return true
   }
 }
 
-export default new ExpenseService()
+export default new ExpenseService();

@@ -1,58 +1,201 @@
-import farmData from '../mockData/farms.json'
+import { toast } from 'react-toastify';
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+const { ApperClient } = window.ApperSDK;
+
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
 class FarmService {
-  constructor() {
-    this.farms = [...farmData]
-  }
-
   async getAll() {
-    await delay(300)
-    return [...this.farms]
+    try {
+      const params = {
+        fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "size", "size_unit", "location", "created_at"]
+      };
+      
+      const response = await apperClient.fetchRecords('farm', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+      
+      return response.data || [];
+    } catch (error) {
+      console.error('Error fetching farms:', error);
+      toast.error('Failed to fetch farms');
+      return [];
+    }
   }
 
   async getById(id) {
-    await delay(250)
-    const farm = this.farms.find(f => f.id === id)
-    if (!farm) {
-      throw new Error('Farm not found')
+    try {
+      const params = {
+        fields: ["Name", "Tags", "Owner", "CreatedOn", "CreatedBy", "ModifiedOn", "ModifiedBy", "size", "size_unit", "location", "created_at"]
+      };
+      
+      const response = await apperClient.getRecordById('farm', id, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching farm with ID ${id}:`, error);
+      toast.error('Failed to fetch farm');
+      return null;
     }
-    return { ...farm }
   }
 
   async create(farmData) {
-    await delay(400)
-    const newFarm = {
-      id: Date.now().toString(),
-      ...farmData,
-      createdAt: new Date().toISOString()
+    try {
+      // Only include Updateable fields
+      const params = {
+        records: [{
+          Name: farmData.name || farmData.Name,
+          Tags: farmData.tags || farmData.Tags || "",
+          Owner: farmData.owner || farmData.Owner,
+          size: parseFloat(farmData.size) || 0,
+          size_unit: farmData.sizeUnit || farmData.size_unit || "acres",
+          location: farmData.location,
+          created_at: new Date().toISOString().split('T')[0] // Date format YYYY-MM-DD
+        }]
+      };
+      
+      const response = await apperClient.createRecord('farm', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create ${failedRecords.length} records:${failedRecords}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          toast.success('Farm created successfully');
+          return successfulRecords[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error creating farm:', error);
+      toast.error('Failed to create farm');
+      return null;
     }
-    this.farms.push(newFarm)
-    return { ...newFarm }
   }
 
   async update(id, updateData) {
-    await delay(350)
-    const index = this.farms.findIndex(f => f.id === id)
-    if (index === -1) {
-      throw new Error('Farm not found')
+    try {
+      // Only include Updateable fields
+      const params = {
+        records: [{
+          Id: parseInt(id),
+          Name: updateData.name || updateData.Name,
+          Tags: updateData.tags || updateData.Tags || "",
+          Owner: updateData.owner || updateData.Owner,
+          size: parseFloat(updateData.size) || 0,
+          size_unit: updateData.sizeUnit || updateData.size_unit || "acres",
+          location: updateData.location,
+          created_at: updateData.created_at || new Date().toISOString().split('T')[0]
+        }]
+      };
+      
+      const response = await apperClient.updateRecord('farm', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update ${failedUpdates.length} records:${failedUpdates}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulUpdates.length > 0) {
+          toast.success('Farm updated successfully');
+          return successfulUpdates[0].data;
+        }
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error updating farm:', error);
+      toast.error('Failed to update farm');
+      return null;
     }
-    
-    this.farms[index] = { ...this.farms[index], ...updateData }
-    return { ...this.farms[index] }
   }
 
   async delete(id) {
-    await delay(300)
-    const index = this.farms.findIndex(f => f.id === id)
-    if (index === -1) {
-      throw new Error('Farm not found')
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord('farm', params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return false;
+      }
+      
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete ${failedDeletions.length} records:${failedDeletions}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulDeletions.length > 0) {
+          toast.success('Farm deleted successfully');
+          return true;
+        }
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error deleting farm:', error);
+      toast.error('Failed to delete farm');
+      return false;
     }
-    
-    this.farms.splice(index, 1)
-    return true
   }
 }
 
-export default new FarmService()
+export default new FarmService();
