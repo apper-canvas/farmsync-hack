@@ -120,7 +120,13 @@ return (
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
 {crops.map((crop, index) => {
-                            const stageInfo = getStageInfo(crop.growthStage);
+                            // Validate crop object exists before accessing properties
+                            if (!crop) {
+                                return null;
+                            }
+                            
+                            // Safely get stage info with fallback for different property formats
+                            const stageInfo = getStageInfo(crop?.growth_stage ?? crop?.growthStage);
                             return (
                                 <motion.tr
                                     key={crop.id || crop.Id || index}
@@ -129,23 +135,23 @@ return (
                                     transition={{ delay: index * 0.05 }}
                                     className="hover:bg-gray-50 transition-colors"
                                 >
-                                    <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                                         <div>
                                             <div className="text-sm font-medium text-gray-900">
-                                                {crop.name}
+                                                {crop?.name ?? crop?.Name ?? 'Unknown Crop'}
                                             </div>
-                                            {crop.variety && (
+                                            {crop?.variety && (
                                                 <div className="text-sm text-gray-500">
                                                     {crop.variety}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm text-gray-900">
-                                            {getFarmName(crop.farmId)}
+                                            {getFarmName(crop?.farmId ?? crop?.farm_id)}
                                         </div>
-                                        {crop.field && (
+                                        {crop?.field && (
                                             <div className="text-sm text-gray-500">
                                                 {crop.field}
                                             </div>
@@ -169,7 +175,7 @@ return (
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex items-center justify-end space-x-2">
-                                            <Button
+<Button
                                                 onClick={() => onEdit(crop)}
                                                 className="text-primary hover:text-primary/80"
                                                 whileHover={{ scale: 1.1 }}
@@ -178,7 +184,7 @@ return (
                                                 <ApperIcon name="Edit" className="h-4 w-4" />
                                             </Button>
                                             <Button
-                                                onClick={() => onDelete(crop.id)}
+                                                onClick={() => onDelete(crop?.id ?? crop?.Id)}
                                                 className="text-gray-400 hover:text-error"
                                                 whileHover={{ scale: 1.1 }}
                                                 whileTap={{ scale: 0.9 }}
