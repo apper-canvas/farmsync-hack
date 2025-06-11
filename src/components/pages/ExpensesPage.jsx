@@ -8,6 +8,7 @@ import ExpenseFilters from '@/components/organisms/ExpenseFilters';
 import ExpenseStatsGrid from '@/components/organisms/ExpenseStatsGrid';
 import ExpenseFormModal from '@/components/organisms/ExpenseFormModal';
 import ExpensesList from '@/components/organisms/ExpensesList';
+import ExpenseChart from '@/components/organisms/ExpenseChart';
 import ExportModal from '@/components/organisms/ExportModal';
 import { expenseService, farmService } from '@/services';
 export default function ExpensesPage() {
@@ -245,8 +246,14 @@ const [editingExpense, setEditingExpense] = useState(null);
         onDateFilterChange={setDateFilter} 
       />
 
-      <ExpenseStatsGrid totalExpenses={stats.total} categorizedExpenses={stats.byCategory} />
+<ExpenseStatsGrid totalExpenses={stats.total} categorizedExpenses={stats.byCategory} />
 
+      <ExpenseChart 
+        expenses={filteredExpenses} 
+        categories={categories} 
+        filter={filter} 
+        dateFilter={dateFilter} 
+      />
       <ExpenseFormModal 
         isOpen={showAddForm} 
         onClose={resetForm} 
